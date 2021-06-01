@@ -1,3 +1,10 @@
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
@@ -8,7 +15,7 @@ export ZSH="/Users/mnguyen/.oh-my-zsh"
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-ZSH_THEME="spaceship"
+ZSH_THEME="powerlevel10k/powerlevel10k"
 ZSH_DISABLE_COMPFIX=true
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
@@ -39,7 +46,7 @@ ZSH_DISABLE_COMPFIX=true
 # DISABLE_LS_COLORS="true"
 
 # Uncomment the following line to disable auto-setting terminal title.
-# DISABLE_AUTO_TITLE="true"
+DISABLE_AUTO_TITLE="true"
 
 # Uncomment the following line to enable command auto-correction.
 # ENABLE_CORRECTION="true"
@@ -68,7 +75,7 @@ ZSH_DISABLE_COMPFIX=true
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git zsh-autosuggestions autojump)
+plugins=(git zsh-autosuggestions)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -107,7 +114,7 @@ alias aca="git add -A && git commit --amend --no-edit"
 alias reset-soft="git reset --soft HEAD^"
 alias greset="git reset"
 alias clear-repo="git checkout -- ."
-alias start="npm start"
+alias start="npm run start -- --watch .env"
 alias lint="npm run lint"
 alias test="npm run test"
 alias check="npm run check"
@@ -176,17 +183,15 @@ function pg-tunnel() {
     jumphost=3.213.168.216
     ssh_key=~/.ssh/sequoia.pem
     dev=sequoia-dev.ccqasi2yxz3m.us-east-1.rds.amazonaws.com
-    dev_redshift=sequoia-dev.c8usf2o3xhxz.us-east-1.redshift.amazonaws.com
     qa=sequoia-qa.ccqasi2yxz3m.us-east-1.rds.amazonaws.com
     stage=sequoia-stage-cluster.cluster-ccqasi2yxz3m.us-east-1.rds.amazonaws.com
-    prod=sequoia-prod-cluster.cluster-ccqasi2yxz3m.us-east-1.rds.amazonaws.com
     ;;
   *)
     echo "Invalid or missing project [$1] \n$USAGE"
     return 1
     ;;
   esac
-  if [[ "$2" =~ ^(dev|dev_redshift|qa|stage|prod)$ ]]; then
+  if [[ "$2" =~ ^(dev|qa|stage|prod)$ ]]; then
     eval "dbhost=\$$2"
     if [[ -n "$dbhost" ]]; then
       echo "----- $dbhost -----"
@@ -207,14 +212,23 @@ function pg-tunnel() {
 # tmux
 if [ ! "$TMUX" = "" ]; then export TERM=xterm-256color; fi
 
-fpath+=('/usr/local/lib/node_modules/pure-prompt/functions')
-autoload -U promptinit
-promptinit
-prompt pure
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"                   # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion" # This loads nvm bash_completion
+# z
+. $HOME/tools/z/z.sh
 
-  # Set Spaceship ZSH as a prompt
-  autoload -U promptinit; promptinit
-  prompt spaceship
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('/Users/mnguyen/anaconda3/bin/conda' 'shell.zsh' 'hook' 2>/dev/null)"
+if [ $? -eq 0 ]; then
+  eval "$__conda_setup"
+else
+  if [ -f "/Users/mnguyen/anaconda3/etc/profile.d/conda.sh" ]; then
+    . "/Users/mnguyen/anaconda3/etc/profile.d/conda.sh"
+  else
+    export PATH="/Users/mnguyen/anaconda3/bin:$PATH"
+  fi
+fi
+unset __conda_setup
+# <<< conda initialize <<<
+
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
