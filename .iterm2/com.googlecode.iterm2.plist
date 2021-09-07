@@ -2407,10 +2407,12 @@
 	</dict>
 	<key>Default Bookmark Guid</key>
 	<string>DFDD6335-542F-4AEF-AD8A-0719263911E8</string>
+	<key>DimBackgroundWindows</key>
+	<false/>
 	<key>DimInactiveSplitPanes</key>
-	<false/>
+	<true/>
 	<key>DimOnlyText</key>
-	<false/>
+	<true/>
 	<key>EnableDivisionView</key>
 	<true/>
 	<key>GlobalKeyMap</key>
@@ -4404,8 +4406,6 @@
 			<string>kNextWindowPointerAction</string>
 		</dict>
 	</dict>
-	<key>PreventEscapeSequenceFromClearingHistory</key>
-	<false/>
 	<key>PromptOnQuitEvenIfThereAreNoWindows</key>
 	<true/>
 	<key>QuitWhenAllWindowsClosed</key>
@@ -4419,7 +4419,7 @@
 	<key>SoundForEsc</key>
 	<false/>
 	<key>SplitPaneDimmingAmount</key>
-	<real>0.34456449468085115</real>
+	<real>0.21514357705152673</real>
 	<key>StatusBarPosition</key>
 	<integer>1</integer>
 	<key>TabStyleWithAutomaticOption</key>
