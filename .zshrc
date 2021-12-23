@@ -5,6 +5,16 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
+[[ -f ~/.oh-my-zsh/custom/plugins/zsh-snap/znap.zsh ]] ||
+    git clone --depth 1 -- \
+        https://github.com/marlonrichert/zsh-snap.git ~/.oh-my-zsh/custom/plugins/zsh-snap
+source ~/.oh-my-zsh/custom/plugins/zsh-snap/znap.zsh
+
+# znap source marlonrichert/zsh-autocomplete
+# ZSH_AUTOSUGGEST_STRATEGY=( history )
+znap source zsh-users/zsh-autosuggestions
+znap source zsh-users/zsh-syntax-highlighting
+
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
@@ -49,7 +59,7 @@ ZSH_DISABLE_COMPFIX=true
 DISABLE_AUTO_TITLE="true"
 
 # Uncomment the following line to enable command auto-correction.
-ENABLE_CORRECTION="true"
+# ENABLE_CORRECTION="true"
 
 # Uncomment the following line to display red dots whilst waiting for completion.
 # COMPLETION_WAITING_DOTS="true"
@@ -75,7 +85,7 @@ ENABLE_CORRECTION="true"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git zsh-autosuggestions)
+plugins=()
 
 source $ZSH/oh-my-zsh.sh
 
@@ -111,14 +121,17 @@ alias pull="git pull"
 alias pullr="git pull --rebase"
 alias ac="git add-commit -m"
 alias aca="git add -A && git commit --amend --no-edit"
-alias reset-soft="git reset --soft HEAD^"
-alias greset="git reset"
+alias grsoft="git reset --soft HEAD^"
+alias grhard="git reset --hard HEAD^"
 alias clear-repo="git checkout -- ."
 alias start="npm run start -- --watch .env"
 alias lint="npm run lint"
 alias test="npm run test"
 alias check="npm run check"
+alias sync-tenants="node /Users/mnguyen/esante/sys/.tenant-configs/sync"
 alias da="direnv allow"
+alias is="npm i && start"
+alias ys="yarn && start"
 eval "$(direnv hook zsh)"
 
 function awsp() {
@@ -151,13 +164,13 @@ function awsp() {
       read MFA_TOKEN
       echo "Entered token: $MFA_TOKEN"
       MFA_DEVICE=$(aws iam list-mfa-devices | jq -r '.MFADevices|first.SerialNumber')
-      MFA_SESSION=$(aws sts get-session-token --serial-number $MFA_DEVICE --token-code $MFA_TOKEN)
+      MFA_SESSION=$(aws sts get-session-token --serial-number $MFA_DEVICE --token-code $MFA_TOKEN --duration-seconds 43200)
       unset AWS_DEFAULT_PROFILE && unset AWS_PROFILE
-      unset AWS_ACCESS_KEY_ID && export AWS_ACCESS_KEY_ID=$(echo $MFA_SESSION | jq -r '.Credentials.AccessKeyId')
-      unset AWS_SECRET_ACCESS_KEY && export AWS_SECRET_ACCESS_KEY=$(echo $MFA_SESSION | jq -r '.Credentials.SecretAccessKey')
-      unset AWS_SESSION_TOKEN && export AWS_SESSION_TOKEN=$(echo $MFA_SESSION | jq -r '.Credentials.SessionToken')
-      unset AWS_REGION && export AWS_REGION=$(aws configure get region --profile $1)
-      unset AWS_DEFAULT_REGION && export AWS_DEFAULT_REGION=$(aws configure get region --profile $1)
+      unset AWS_ACCESS_KEY_ID && export AWS_ACCESS_KEY_ID=$(echo $MFA_SESSION | jq -r '.Credentials.AccessKeyId') 
+      unset AWS_SECRET_ACCESS_KEY && export AWS_SECRET_ACCESS_KEY=$(echo $MFA_SESSION | jq -r '.Credentials.SecretAccessKey') 
+      unset AWS_SESSION_TOKEN && export AWS_SESSION_TOKEN=$(echo $MFA_SESSION | jq -r '.Credentials.SessionToken') 
+      unset AWS_REGION && export AWS_REGION=$(aws configure get region --profile $1) 
+      unset AWS_DEFAULT_REGION && export AWS_DEFAULT_REGION=$(aws configure get region --profile $1) 
       ;;
     *)
       grep "profile" $HOME/.aws/config | sed 's/\[profile \(.*\)\]/\1/'
@@ -177,7 +190,6 @@ function pg-tunnel() {
     dev=esante-dev.cvjgxrxnvk8i.us-east-1.rds.amazonaws.com
     qa=esante-qa.cvjgxrxnvk8i.us-east-1.rds.amazonaws.com
     stage=esante-aurora-postgres-stage-cluster.cluster-cvjgxrxnvk8i.us-east-1.rds.amazonaws.com
-    prod=""
     ;;
   "sequoia")
     jumphost=3.213.168.216
@@ -214,6 +226,8 @@ if [ ! "$TMUX" = "" ]; then export TERM=xterm-256color; fi
 
 # z
 . $HOME/tools/z/z.sh
+
+# . ~/.asdf/plugins/java/set-java-home.zsh
 
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!

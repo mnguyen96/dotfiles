@@ -2412,7 +2412,7 @@
 	<key>DimInactiveSplitPanes</key>
 	<true/>
 	<key>DimOnlyText</key>
-	<true/>
+	<false/>
 	<key>EnableDivisionView</key>
 	<true/>
 	<key>GlobalKeyMap</key>
@@ -4416,10 +4416,12 @@
 	<true/>
 	<key>Size Changes Affect Profile</key>
 	<true/>
+	<key>SmartPlacement</key>
+	<false/>
 	<key>SoundForEsc</key>
 	<false/>
 	<key>SplitPaneDimmingAmount</key>
-	<real>0.21514357705152673</real>
+	<real>0.16029465605393342</real>
 	<key>StatusBarPosition</key>
 	<integer>1</integer>
 	<key>TabStyleWithAutomaticOption</key>
