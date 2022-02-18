@@ -19,6 +19,13 @@ setopt HIST_BEEP
         https://github.com/marlonrichert/zsh-snap.git ~/.oh-my-zsh/custom/plugins/zsh-snap
 source ~/.oh-my-zsh/custom/plugins/zsh-snap/znap.zsh
 
+
+# z
+[[ -f $HOME/tools/z/z.sh/z.sh ]] ||
+    git clone --depth 1 -- \
+        https://github.com/rupa/z.git $HOME/tools/z/z.sh
+. $HOME/tools/z/z.sh
+
 # znap source marlonrichert/zsh-autocomplete
 # ZSH_AUTOSUGGEST_STRATEGY=( history )
 znap source zsh-users/zsh-autosuggestions
@@ -246,8 +253,6 @@ function pg-tunnel() {
 # tmux
 if [ ! "$TMUX" = "" ]; then export TERM=xterm-256color; fi
 
-# z
-. $HOME/tools/z/z.sh
 
 # . ~/.asdf/plugins/java/set-java-home.zsh
 
