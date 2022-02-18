@@ -41,7 +41,7 @@ zstyle :bracketed-paste-magic paste-finish pastefinish
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
 # Path to your oh-my-zsh installation.
-export ZSH="/Users/mnguyen/.oh-my-zsh"
+export ZSH="$HOME/.oh-my-zsh"
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
@@ -149,7 +149,7 @@ alias start="npm run start -- --watch .env"
 alias lint="npm run lint"
 alias test="npm run test -- --watch"
 alias check="npm run check"
-alias sync-tenants="node /Users/mnguyen/esante/sys/.tenant-configs/sync"
+alias sync-tenants="node $HOME/esante/sys/.tenant-configs/sync"
 alias da="direnv allow"
 alias is="npm i && start"
 alias ys="yarn && start"
@@ -253,14 +253,14 @@ if [ ! "$TMUX" = "" ]; then export TERM=xterm-256color; fi
 
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('/Users/mnguyen/anaconda3/bin/conda' 'shell.zsh' 'hook' 2>/dev/null)"
+__conda_setup="$('$HOME/anaconda3/bin/conda' 'shell.zsh' 'hook' 2>/dev/null)"
 if [ $? -eq 0 ]; then
   eval "$__conda_setup"
 else
-  if [ -f "/Users/mnguyen/anaconda3/etc/profile.d/conda.sh" ]; then
-    . "/Users/mnguyen/anaconda3/etc/profile.d/conda.sh"
+  if [ -f "$HOME/anaconda3/etc/profile.d/conda.sh" ]; then
+    . "$HOME/anaconda3/etc/profile.d/conda.sh"
   else
-    export PATH="/Users/mnguyen/anaconda3/bin:$PATH"
+    export PATH="$HOME/anaconda3/bin:$PATH"
   fi
 fi
 unset __conda_setup
