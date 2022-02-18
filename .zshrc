@@ -5,6 +5,15 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
+setopt EXTENDED_HISTORY
+setopt HIST_EXPIRE_DUPS_FIRST
+setopt HIST_IGNORE_DUPS
+setopt HIST_IGNORE_ALL_DUPS
+setopt HIST_IGNORE_SPACE
+setopt HIST_FIND_NO_DUPS
+setopt HIST_SAVE_NO_DUPS
+setopt HIST_BEEP
+
 [[ -f ~/.oh-my-zsh/custom/plugins/zsh-snap/znap.zsh ]] ||
     git clone --depth 1 -- \
         https://github.com/marlonrichert/zsh-snap.git ~/.oh-my-zsh/custom/plugins/zsh-snap
@@ -14,6 +23,19 @@ source ~/.oh-my-zsh/custom/plugins/zsh-snap/znap.zsh
 # ZSH_AUTOSUGGEST_STRATEGY=( history )
 znap source zsh-users/zsh-autosuggestions
 znap source zsh-users/zsh-syntax-highlighting
+
+### Fix slowness of pastes with zsh-syntax-highlighting.zsh
+pasteinit() {
+  OLD_SELF_INSERT=${${(s.:.)widgets[self-insert]}[2,3]}
+  zle -N self-insert url-quote-magic # I wonder if you'd need `.url-quote-magic`?
+}
+
+pastefinish() {
+  zle -N self-insert $OLD_SELF_INSERT
+}
+zstyle :bracketed-paste-magic paste-init pasteinit
+zstyle :bracketed-paste-magic paste-finish pastefinish
+### Fix slowness of pastes
 
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
@@ -125,12 +147,13 @@ alias grsoft="git reset --soft HEAD^"
 alias grhard="git reset --hard HEAD^"
 alias start="npm run start -- --watch .env"
 alias lint="npm run lint"
-alias test="npm run test"
+alias test="npm run test -- --watch"
 alias check="npm run check"
 alias sync-tenants="node /Users/mnguyen/esante/sys/.tenant-configs/sync"
 alias da="direnv allow"
 alias is="npm i && start"
 alias ys="yarn && start"
+alias hg="history | grep"
 eval "$(direnv hook zsh)"
 
 function awsp() {
