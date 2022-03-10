@@ -124,6 +124,15 @@ function awsp() {
   fi
 }
 
+function ssh_tunnel(){
+    # ssh_tunnel [jumphost] [target-server-name-or-ip] [target-server-port] [local-server-port]
+     if [ -z "$1" ] || [ -z "$2" ] || [ -z "$3" ] || [ -z "$4" ]; then
+        echo "USAGE: ssh_tunnel jumphost target-server-name-or-ip target-server-port local-server-port"
+        return 1;
+    fi
+    ssh -v -N -L $4:$2:$3 $1
+}
+
 function pg-tunnel() {
   USAGE="USAGE:\t pg-tunnel <project> [dev|qa|stage|prod]"
   case "$1" in
