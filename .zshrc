@@ -30,7 +30,6 @@ source $HOME/.oh-my-zsh/custom/plugins/zsh-snap/znap.zsh
 # ZSH_AUTOSUGGEST_STRATEGY=( history )
 znap source zsh-users/zsh-autosuggestions
 znap source zsh-users/zsh-syntax-highlighting
-
 znap source romkatv/powerlevel10k
 
 ### Fix slowness of pastes with zsh-syntax-highlighting.zsh
@@ -172,8 +171,11 @@ function pg-tunnel() {
     return 2
   fi
 }
-
-. $HOME/.asdf/asdf.sh
+if [ -f $HOME/.asdf/asdf.sh ]; then
+    . $HOME/.asdf/asdf.sh
+else 
+    . $(brew --prefix asdf)/asdf.sh
+fi    
 
 # tmux
 if [ ! "$TMUX" = "" ]; then export TERM=xterm-256color; fi
