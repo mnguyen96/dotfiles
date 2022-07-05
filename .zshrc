@@ -76,6 +76,7 @@ alias da="direnv allow"
 alias is="npm i && start"
 alias ys="yarn && start"
 alias hg="history | grep"
+alias aws-login="aws sso login"
 eval "$(direnv hook zsh)"
 
 function awsp() {
