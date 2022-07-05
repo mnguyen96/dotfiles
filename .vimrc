@@ -1,1 +1,0 @@
-/Users/mnguyen/.vim/vimrc
