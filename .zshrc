@@ -14,10 +14,10 @@ setopt HIST_FIND_NO_DUPS
 setopt HIST_SAVE_NO_DUPS
 setopt HIST_BEEP
 
-[[ -f ~/.oh-my-zsh/custom/plugins/zsh-snap/znap.zsh ]] ||
+[[ -f $HOME/.oh-my-zsh/custom/plugins/zsh-snap/znap.zsh ]] ||
     git clone --depth 1 -- \
-        https://github.com/marlonrichert/zsh-snap.git ~/.oh-my-zsh/custom/plugins/zsh-snap
-source ~/.oh-my-zsh/custom/plugins/zsh-snap/znap.zsh
+        https://github.com/marlonrichert/zsh-snap.git $HOME/.oh-my-zsh/custom/plugins/zsh-snap
+source $HOME/.oh-my-zsh/custom/plugins/zsh-snap/znap.zsh
 
 
 # z
@@ -30,6 +30,8 @@ source ~/.oh-my-zsh/custom/plugins/zsh-snap/znap.zsh
 # ZSH_AUTOSUGGEST_STRATEGY=( history )
 znap source zsh-users/zsh-autosuggestions
 znap source zsh-users/zsh-syntax-highlighting
+
+znap source romkatv/powerlevel10k
 
 ### Fix slowness of pastes with zsh-syntax-highlighting.zsh
 pasteinit() {
@@ -171,7 +173,7 @@ function pg-tunnel() {
   fi
 }
 
-. $(brew --prefix asdf)/asdf.sh
+. $HOME/.asdf/asdf.sh
 
 # tmux
 if [ ! "$TMUX" = "" ]; then export TERM=xterm-256color; fi
