@@ -23,7 +23,7 @@ source ~/.oh-my-zsh/custom/plugins/zsh-snap/znap.zsh
 # z
 [[ -f $HOME/tools/z/z.sh ]] ||
     git clone --depth 1 -- \
-        https://github.com/rupa/z.git $HOME/tools/z/z.sh
+        https://github.com/rupa/z.git $HOME/tools/z
 . $HOME/tools/z/z.sh
 
 # znap source marlonrichert/zsh-autocomplete
