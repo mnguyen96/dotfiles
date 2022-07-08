@@ -2434,6 +2434,50 @@
 			<key>Text</key>
 			<string></string>
 		</dict>
+		<key>0x68-0x180000-0x4</key>
+		<dict>
+			<key>Action</key>
+			<integer>18</integer>
+			<key>Label</key>
+			<string></string>
+			<key>Text</key>
+			<string></string>
+			<key>Version</key>
+			<integer>1</integer>
+		</dict>
+		<key>0x6a-0x180000-0x26</key>
+		<dict>
+			<key>Action</key>
+			<integer>21</integer>
+			<key>Label</key>
+			<string></string>
+			<key>Text</key>
+			<string></string>
+			<key>Version</key>
+			<integer>1</integer>
+		</dict>
+		<key>0x6b-0x180000-0x28</key>
+		<dict>
+			<key>Action</key>
+			<integer>20</integer>
+			<key>Label</key>
+			<string></string>
+			<key>Text</key>
+			<string></string>
+			<key>Version</key>
+			<integer>1</integer>
+		</dict>
+		<key>0x6c-0x180000-0x25</key>
+		<dict>
+			<key>Action</key>
+			<integer>19</integer>
+			<key>Label</key>
+			<string></string>
+			<key>Text</key>
+			<string></string>
+			<key>Version</key>
+			<integer>1</integer>
+		</dict>
 		<key>0x9-0x40000</key>
 		<dict>
 			<key>Action</key>
@@ -4371,6 +4415,8 @@
 	<true/>
 	<key>SavePasteHistory</key>
 	<true/>
+	<key>SeparateStatusBarsPerPane</key>
+	<true/>
 	<key>ShowFullScreenTabBar</key>
 	<true/>
 	<key>Size Changes Affect Profile</key>
@@ -4380,9 +4426,11 @@
 	<key>SoundForEsc</key>
 	<false/>
 	<key>SplitPaneDimmingAmount</key>
-	<real>0.06774095257509101</real>
+	<real>0.055620016449863474</real>
 	<key>StatusBarPosition</key>
 	<integer>1</integer>
+	<key>SwitchPaneModifier</key>
+	<integer>5</integer>
 	<key>TabStyleWithAutomaticOption</key>
 	<integer>5</integer>
 	<key>TabViewType</key>

@@ -55,7 +55,7 @@ ZSH_THEME="powerlevel10k/powerlevel10k"
 ZSH_DISABLE_COMPFIX=true
 DISABLE_AUTO_TITLE="true"
 
-plugins=()
+plugins=(git)
 
 source $ZSH/oh-my-zsh.sh
 
