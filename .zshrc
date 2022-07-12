@@ -76,8 +76,69 @@ alias da="direnv allow"
 alias is="npm i && start"
 alias ys="yarn && start"
 alias hg="history | grep"
-alias aws-login="aws sso login"
+alias eg="env | grep"
 eval "$(direnv hook zsh)"
+
+function aws-login() {
+  SSO_FILE=$(ls -tr "${HOME}/.aws/sso/cache" | tail -n1)
+  # echo $SSO_FILE
+  if [ -f ${HOME}/.aws/sso/cache/${SSO_FILE} ]; then
+    EXPIRATION=$(cat $HOME/.aws/sso/cache/${SSO_FILE} | jq -r '.expiresAt')
+    NOW=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+    # echo $EXPIRATION
+    # echo $NOW
+    if [[ $NOW > $EXPIRATION ]]; then
+      echo "SSO expired"
+      aws sso login
+    fi
+  else
+    aws sso login
+  fi
+
+  JSON_BASEPATH="${HOME}/.aws/cli/cache"
+  AWS_CREDENTIALS_PATH="${HOME}/.aws/credentials"
+
+  if [ -f ${AWS_CREDENTIALS_PATH} ]; then
+      echo "backing up existing credentials"
+      if [[ -f ${HOME}/.aws/backup ]]; then
+        mkdir ${HOME}/.aws/backup
+      fi
+      cp -rf ${AWS_CREDENTIALS_PATH} ${HOME}/.aws/backup/$(date +"%s")
+
+      dirs=($(find ${HOME}/.aws/backup -type d))
+      for dir in "${dirs[@]}"; do
+        cd "$dir"
+        ls -pt | grep -v / | tail -n +10 | xargs rm -f
+        cd
+      done
+  fi
+
+  # find the latest CLI JSON file
+
+  json_file=$(ls -tr "${JSON_BASEPATH}" | tail -n1)
+
+  if [[ ! -f ${JSON_BASEPATH}/${json_file} ]]; then
+    aws sts get-caller-identity --no-cli-pager &
+    PID=$!
+    wait $PID
+  else
+    echo "Found cli cache file"
+  fi
+
+  json_file=$(ls -tr "${JSON_BASEPATH}" | tail -n1) 
+  # use jq to dump stuff in the right place
+  export AWS_ACCESS_KEY_ID=$(cat ${JSON_BASEPATH}/${json_file} | jq -r '.Credentials.AccessKeyId')
+  export AWS_SECRET_ACCESS_KEY=$(cat ${JSON_BASEPATH}/${json_file} | jq -r '.Credentials.SecretAccessKey')
+  export AWS_SESSION_TOKEN=$(cat ${JSON_BASEPATH}/${json_file} | jq -r '.Credentials.SessionToken')
+
+  echo "[default]" >${AWS_CREDENTIALS_PATH}
+
+  echo "AWS_ACCESS_KEY_ID = ${AWS_ACCESS_KEY_ID}" >>${AWS_CREDENTIALS_PATH}
+  echo "AWS_SECRET_ACCESS_KEY = ${AWS_SECRET_ACCESS_KEY}" >>${AWS_CREDENTIALS_PATH}
+  echo "AWS_SESSION_TOKEN = ${AWS_SESSION_TOKEN}" >>${AWS_CREDENTIALS_PATH}
+
+  cat ${HOME}/.aws/credentials-seq-va >> ${AWS_CREDENTIALS_PATH}
+}
 
 function awsp() {
   if [[ -d $HOME/.aws ]] && [[ -f $HOME/.aws/config ]]; then
