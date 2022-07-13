@@ -117,12 +117,22 @@ function aws-login() {
 
   json_file=$(ls -tr "${JSON_BASEPATH}" | tail -n1)
 
-  if [[ ! -f ${JSON_BASEPATH}/${json_file} ]]; then
+  if [[ -f ${JSON_BASEPATH}/${json_file} ]]; then
+    echo "Found cli cache file"
+    EXPIRATION=$(cat ${JSON_BASEPATH}/${json_file} | jq -r '.Credentials.Expiration')
+    NOW=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+    # echo $EXPIRATION
+    # echo $NOW
+    if [[ $NOW > $EXPIRATION ]]; then
+      echo "CLI cache expired"
+      aws sts get-caller-identity --no-cli-pager &
+      PID=$!
+      wait $PID
+    fi
+  else
     aws sts get-caller-identity --no-cli-pager &
     PID=$!
     wait $PID
-  else
-    echo "Found cli cache file"
   fi
 
   json_file=$(ls -tr "${JSON_BASEPATH}" | tail -n1) 
