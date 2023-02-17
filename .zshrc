@@ -14,6 +14,9 @@ setopt HIST_FIND_NO_DUPS
 setopt HIST_SAVE_NO_DUPS
 setopt HIST_BEEP
 
+bindkey "\eh" backward-word
+bindkey "\el" forward-word
+
 [[ -f $HOME/.oh-my-zsh/custom/plugins/zsh-snap/znap.zsh ]] ||
     git clone --depth 1 -- \
         https://github.com/marlonrichert/zsh-snap.git $HOME/.oh-my-zsh/custom/plugins/zsh-snap
@@ -81,7 +84,7 @@ eval "$(direnv hook zsh)"
 
 function aws-login() {
   SSO_FILE=$(ls -tr "${HOME}/.aws/sso/cache" | tail -n1)
-  # echo $SSO_FILE
+  echo $SSO_FILE
   if [ -f ${HOME}/.aws/sso/cache/${SSO_FILE} ]; then
     EXPIRATION=$(cat $HOME/.aws/sso/cache/${SSO_FILE} | jq -r '.expiresAt')
     NOW=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
@@ -104,12 +107,12 @@ function aws-login() {
         mkdir ${HOME}/.aws/backup
       fi
       cp -rf ${AWS_CREDENTIALS_PATH} ${HOME}/.aws/backup/$(date +"%s")
-
+      currdir=$PWD
       dirs=($(find ${HOME}/.aws/backup -type d))
       for dir in "${dirs[@]}"; do
         cd "$dir"
         ls -pt | grep -v / | tail -n +10 | xargs rm -f
-        cd
+        cd $currdir
       done
   fi
 
@@ -125,6 +128,10 @@ function aws-login() {
     # echo $NOW
     if [[ $NOW > $EXPIRATION ]]; then
       echo "CLI cache expired"
+      rm ${JSON_BASEPATH}/${json_file}
+      unset AWS_ACCESS_KEY_ID 
+      unset AWS_SECRET_ACCESS_KEY 
+      unset AWS_SESSION_TOKEN 
       aws sts get-caller-identity --no-cli-pager &
       PID=$!
       wait $PID
@@ -147,7 +154,7 @@ function aws-login() {
   echo "AWS_SECRET_ACCESS_KEY = ${AWS_SECRET_ACCESS_KEY}" >>${AWS_CREDENTIALS_PATH}
   echo "AWS_SESSION_TOKEN = ${AWS_SESSION_TOKEN}" >>${AWS_CREDENTIALS_PATH}
 
-  cat ${HOME}/.aws/credentials-seq-va >> ${AWS_CREDENTIALS_PATH}
+  cat ${HOME}/.aws/credentials-default >> ${AWS_CREDENTIALS_PATH}
 }
 
 function awsp() {
@@ -246,7 +253,7 @@ function pg-tunnel() {
 if [ -f $HOME/.asdf/asdf.sh ]; then
     . $HOME/.asdf/asdf.sh
 else 
-    . $(brew --prefix asdf)/asdf.sh
+    . $(brew --prefix asdf)/libexec/asdf.sh
 fi    
 
 # tmux
@@ -270,3 +277,5 @@ unset __conda_setup
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
