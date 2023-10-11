@@ -47,7 +47,7 @@ pastefinish() {
 zstyle :bracketed-paste-magic paste-init pasteinit
 zstyle :bracketed-paste-magic paste-finish pastefinish
 ### Fix slowness of pastes
-
+zstyle ':omz:update' mode reminder
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
@@ -66,143 +66,13 @@ alias status="git status"
 alias push="git push"
 alias pull="git pull"
 alias pullr="git pull --rebase"
-alias ac="git add-commit -m"
+alias ac="git add-commit"
 alias aca="git add -A && git commit --amend --no-edit"
 alias grsoft="git reset --soft HEAD^"
 alias grhard="git reset --hard HEAD^"
-alias start="npm run start -- --watch .env"
-alias lint="npm run lint"
-alias test="npm run test -- --watch"
-alias check="npm run check"
-alias sync-tenants="node $HOME/esante/sys/.tenant-configs/sync"
-alias da="direnv allow"
-alias is="npm i && start"
-alias ys="yarn && start"
 alias hg="history | grep"
 alias eg="env | grep"
 eval "$(direnv hook zsh)"
-
-function aws-login() {
-  SSO_FILE=$(ls -tr "${HOME}/.aws/sso/cache" | tail -n1)
-  echo $SSO_FILE
-  if [ -f ${HOME}/.aws/sso/cache/${SSO_FILE} ]; then
-    EXPIRATION=$(cat $HOME/.aws/sso/cache/${SSO_FILE} | jq -r '.expiresAt')
-    NOW=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
-    # echo $EXPIRATION
-    # echo $NOW
-    if [[ $NOW > $EXPIRATION ]]; then
-      echo "SSO expired"
-      aws sso login
-    fi
-  else
-    aws sso login
-  fi
-
-  JSON_BASEPATH="${HOME}/.aws/cli/cache"
-  AWS_CREDENTIALS_PATH="${HOME}/.aws/credentials"
-
-  if [ -f ${AWS_CREDENTIALS_PATH} ]; then
-      echo "backing up existing credentials"
-      if [[ -f ${HOME}/.aws/backup ]]; then
-        mkdir ${HOME}/.aws/backup
-      fi
-      cp -rf ${AWS_CREDENTIALS_PATH} ${HOME}/.aws/backup/$(date +"%s")
-      currdir=$PWD
-      dirs=($(find ${HOME}/.aws/backup -type d))
-      for dir in "${dirs[@]}"; do
-        cd "$dir"
-        ls -pt | grep -v / | tail -n +10 | xargs rm -f
-        cd $currdir
-      done
-  fi
-
-  # find the latest CLI JSON file
-
-  json_file=$(ls -tr "${JSON_BASEPATH}" | tail -n1)
-
-  if [[ -f ${JSON_BASEPATH}/${json_file} ]]; then
-    echo "Found cli cache file"
-    EXPIRATION=$(cat ${JSON_BASEPATH}/${json_file} | jq -r '.Credentials.Expiration')
-    NOW=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
-    # echo $EXPIRATION
-    # echo $NOW
-    if [[ $NOW > $EXPIRATION ]]; then
-      echo "CLI cache expired"
-      rm ${JSON_BASEPATH}/${json_file}
-      unset AWS_ACCESS_KEY_ID 
-      unset AWS_SECRET_ACCESS_KEY 
-      unset AWS_SESSION_TOKEN 
-      aws sts get-caller-identity --no-cli-pager &
-      PID=$!
-      wait $PID
-    fi
-  else
-    aws sts get-caller-identity --no-cli-pager &
-    PID=$!
-    wait $PID
-  fi
-
-  json_file=$(ls -tr "${JSON_BASEPATH}" | tail -n1) 
-  # use jq to dump stuff in the right place
-  export AWS_ACCESS_KEY_ID=$(cat ${JSON_BASEPATH}/${json_file} | jq -r '.Credentials.AccessKeyId')
-  export AWS_SECRET_ACCESS_KEY=$(cat ${JSON_BASEPATH}/${json_file} | jq -r '.Credentials.SecretAccessKey')
-  export AWS_SESSION_TOKEN=$(cat ${JSON_BASEPATH}/${json_file} | jq -r '.Credentials.SessionToken')
-
-  echo "[default]" >${AWS_CREDENTIALS_PATH}
-
-  echo "AWS_ACCESS_KEY_ID = ${AWS_ACCESS_KEY_ID}" >>${AWS_CREDENTIALS_PATH}
-  echo "AWS_SECRET_ACCESS_KEY = ${AWS_SECRET_ACCESS_KEY}" >>${AWS_CREDENTIALS_PATH}
-  echo "AWS_SESSION_TOKEN = ${AWS_SESSION_TOKEN}" >>${AWS_CREDENTIALS_PATH}
-
-  cat ${HOME}/.aws/credentials-default >> ${AWS_CREDENTIALS_PATH}
-}
-
-function awsp() {
-  if [[ -d $HOME/.aws ]] && [[ -f $HOME/.aws/config ]]; then
-
-    case $# in
-    1)
-      PFF=$(grep "profile" $HOME/.aws/config | sed 's/\[profile \(.*\)\]/\1/' | grep $1)
-      if [ -z "$PFF" ]; then
-        echo "Unknow profile $1"
-        unset AWS_DEFAULT_PROFILE && unset AWS_PROFILE
-        exit 1
-      fi
-      unset AWS_ACCESS_KEY_ID && unset AWS_SECRET_ACCESS_KEY && unset AWS_SESSION_TOKEN
-      export AWS_DEFAULT_PROFILE=$1
-      export AWS_PROFILE=$1
-      export AWS_REGION=$(aws configure get region --profile $1)
-      export AWS_DEFAULT_REGION=$(aws configure get region --profile $1)
-      echo "AWS CLI Profile: $1"
-      ;;
-    2)
-      unset AWS_ACCESS_KEY_ID && unset AWS_SECRET_ACCESS_KEY && unset AWS_SESSION_TOKEN
-      export AWS_DEFAULT_PROFILE=$1
-      export AWS_PROFILE=$1
-      if [ -z "$1" ]; then
-        echo "No MFA device. Make sure your local CLI profile and/or MFA devicce in AWS Console are configured."
-        # exit 1
-      fi
-      echo 'MFA Token: '
-      read MFA_TOKEN
-      echo "Entered token: $MFA_TOKEN"
-      MFA_DEVICE=$(aws iam list-mfa-devices | jq -r '.MFADevices|first.SerialNumber')
-      MFA_SESSION=$(aws sts get-session-token --serial-number $MFA_DEVICE --token-code $MFA_TOKEN --duration-seconds 43200)
-      unset AWS_DEFAULT_PROFILE && unset AWS_PROFILE
-      unset AWS_ACCESS_KEY_ID && export AWS_ACCESS_KEY_ID=$(echo $MFA_SESSION | jq -r '.Credentials.AccessKeyId') 
-      unset AWS_SECRET_ACCESS_KEY && export AWS_SECRET_ACCESS_KEY=$(echo $MFA_SESSION | jq -r '.Credentials.SecretAccessKey') 
-      unset AWS_SESSION_TOKEN && export AWS_SESSION_TOKEN=$(echo $MFA_SESSION | jq -r '.Credentials.SessionToken') 
-      unset AWS_REGION && export AWS_REGION=$(aws configure get region --profile $1) 
-      unset AWS_DEFAULT_REGION && export AWS_DEFAULT_REGION=$(aws configure get region --profile $1) 
-      ;;
-    *)
-      grep "profile" $HOME/.aws/config | sed 's/\[profile \(.*\)\]/\1/'
-      ;;
-    esac
-  else
-    echo "AWS CLI is not configured on this machine!"
-  fi
-}
 
 function ssh_tunnel(){
     # ssh_tunnel [jumphost] [target-server-name-or-ip] [target-server-port] [local-server-port]
@@ -213,43 +83,6 @@ function ssh_tunnel(){
     ssh -v -N -L $4:$2:$3 $1
 }
 
-function pg-tunnel() {
-  USAGE="USAGE:\t pg-tunnel <project> [dev|qa|stage|prod]"
-  case "$1" in
-  "esante")
-    jumphost=18.210.203.124
-    ssh_key=~/.ssh/jumphost.pem
-    dev=esante-dev.cvjgxrxnvk8i.us-east-1.rds.amazonaws.com
-    qa=esante-qa.cvjgxrxnvk8i.us-east-1.rds.amazonaws.com
-    stage=esante-aurora-postgres-stage-cluster.cluster-cvjgxrxnvk8i.us-east-1.rds.amazonaws.com
-    ;;
-  "sequoia")
-    jumphost=3.213.168.216
-    ssh_key=~/.ssh/sequoia.pem
-    dev=sequoia-dev.ccqasi2yxz3m.us-east-1.rds.amazonaws.com
-    qa=sequoia-qa.ccqasi2yxz3m.us-east-1.rds.amazonaws.com
-    stage=sequoia-stage-cluster.cluster-ccqasi2yxz3m.us-east-1.rds.amazonaws.com
-    ;;
-  *)
-    echo "Invalid or missing project [$1] \n$USAGE"
-    return 1
-    ;;
-  esac
-  if [[ "$2" =~ ^(dev|qa|stage|prod)$ ]]; then
-    eval "dbhost=\$$2"
-    if [[ -n "$dbhost" ]]; then
-      echo "----- $dbhost -----"
-      echo "ssh -i $ssh_key -N -L 5432:$dbhost:5432 ec2-user@$jumphost"
-      ssh -i $ssh_key -N -L 5432:$dbhost:5432 ec2-user@$jumphost
-    else
-      echo "Environment [$2] not configured \n$USAGE"
-      return 2
-    fi
-  else
-    echo "Invalid environment [$2] \n$USAGE"
-    return 2
-  fi
-}
 if [ -f $HOME/.asdf/asdf.sh ]; then
     . $HOME/.asdf/asdf.sh
 else 
