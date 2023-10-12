@@ -14,8 +14,7 @@ setopt HIST_FIND_NO_DUPS
 setopt HIST_SAVE_NO_DUPS
 setopt HIST_BEEP
 
-bindkey "\eh" backward-word
-bindkey "\el" forward-word
+
 
 [[ -f $HOME/.oh-my-zsh/custom/plugins/zsh-snap/znap.zsh ]] ||
     git clone --depth 1 -- \
@@ -29,24 +28,12 @@ source $HOME/.oh-my-zsh/custom/plugins/zsh-snap/znap.zsh
         https://github.com/rupa/z.git $HOME/tools/z
 . $HOME/tools/z/z.sh
 
-# znap source marlonrichert/zsh-autocomplete
+znap source marlonrichert/zsh-autocomplete
 # ZSH_AUTOSUGGEST_STRATEGY=( history )
 znap source zsh-users/zsh-autosuggestions
 znap source zsh-users/zsh-syntax-highlighting
 znap source romkatv/powerlevel10k
 
-### Fix slowness of pastes with zsh-syntax-highlighting.zsh
-pasteinit() {
-  OLD_SELF_INSERT=${${(s.:.)widgets[self-insert]}[2,3]}
-  zle -N self-insert url-quote-magic # I wonder if you'd need `.url-quote-magic`?
-}
-
-pastefinish() {
-  zle -N self-insert $OLD_SELF_INSERT
-}
-zstyle :bracketed-paste-magic paste-init pasteinit
-zstyle :bracketed-paste-magic paste-finish pastefinish
-### Fix slowness of pastes
 zstyle ':omz:update' mode reminder
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
@@ -54,13 +41,18 @@ zstyle ':omz:update' mode reminder
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
 
-ZSH_THEME="powerlevel10k/powerlevel10k"
+ZSH_THEME=""
 ZSH_DISABLE_COMPFIX=true
 DISABLE_AUTO_TITLE="true"
 
 plugins=(git)
 
 source $ZSH/oh-my-zsh.sh
+
+bindkey "\eh" backward-char
+bindkey "\el" forward-char
+bindkey "\eH" backward-word
+bindkey "\eL" forward-word
 
 alias status="git status"
 alias push="git push"
@@ -72,16 +64,6 @@ alias grsoft="git reset --soft HEAD^"
 alias grhard="git reset --hard HEAD^"
 alias hg="history | grep"
 alias eg="env | grep"
-eval "$(direnv hook zsh)"
-
-function ssh_tunnel(){
-    # ssh_tunnel [jumphost] [target-server-name-or-ip] [target-server-port] [local-server-port]
-     if [ -z "$1" ] || [ -z "$2" ] || [ -z "$3" ] || [ -z "$4" ]; then
-        echo "USAGE: ssh_tunnel jumphost target-server-name-or-ip target-server-port local-server-port"
-        return 1;
-    fi
-    ssh -v -N -L $4:$2:$3 $1
-}
 
 if [ -f $HOME/.asdf/asdf.sh ]; then
     . $HOME/.asdf/asdf.sh
