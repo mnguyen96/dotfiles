@@ -131,7 +131,10 @@ function aws-login() {
 }
 
 # this goes with awsp function
-export $(cat ~/.aws/.env | xargs)
+if [ -f $HOME/.aws/.env ]; then
+  export $(cat ~/.aws/.env | xargs)
+fi
+
 function awsp() {
 	if [[ -d $HOME/.aws ]] && [[ -f $HOME/.aws/config ]]; then
 		case $# in
@@ -226,3 +229,10 @@ case ":$PATH:" in
   *) export PATH="$PNPM_HOME:$PATH" ;;
 esac
 # pnpm end
+
+# bun completions
+[ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
