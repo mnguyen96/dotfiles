@@ -19,6 +19,17 @@ setopt HIST_BEEP
 bindkey "\eh" backward-word
 bindkey "\el" forward-word
 
+# Path to your oh-my-zsh installation.
+export ZSH="$HOME/.oh-my-zsh"
+
+ZSH_THEME=""
+ZSH_DISABLE_COMPFIX=true
+DISABLE_AUTO_TITLE="true"
+
+plugins=(git)
+
+source $ZSH/oh-my-zsh.sh
+
 [[ -f $HOME/.oh-my-zsh/custom/plugins/zsh-snap/znap.zsh ]] ||
     git clone --depth 1 -- \
         https://github.com/marlonrichert/zsh-snap.git $HOME/.oh-my-zsh/custom/plugins/zsh-snap
@@ -32,19 +43,7 @@ znap source romkatv/powerlevel10k
 znap source rupa/z
 
 zstyle ':omz:update' mode reminder
-# If you come from bash you might have to change your $PATH.
-# export PATH=$HOME/bin:/usr/local/bin:$PATH
 
-# Path to your oh-my-zsh installation.
-export ZSH="$HOME/.oh-my-zsh"
-
-ZSH_THEME=""
-ZSH_DISABLE_COMPFIX=true
-DISABLE_AUTO_TITLE="true"
-
-plugins=(git)
-
-source $ZSH/oh-my-zsh.sh
 
 bindkey "\eh" backward-char
 bindkey "\el" forward-char
@@ -64,71 +63,6 @@ alias hg="history | grep"
 alias eg="env | grep"
 alias kube="kubectl"
 eval "$(direnv hook zsh)"
-
-function aws-login() {
-  SSO_FILE=$(ls -tr "${HOME}/.aws/sso/cache" | tail -n1)
-  echo $SSO_FILE
-  if [[ ! -z "$SSO_FILE" && -f ${HOME}/.aws/sso/cache/${SSO_FILE} ]]; then
-    EXPIRATION=$(cat $HOME/.aws/sso/cache/${SSO_FILE} | jq -r '.expiresAt')
-    NOW=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
-    # echo $EXPIRATION
-    # echo $NOW
-    if [[ $NOW > $EXPIRATION ]]; then
-      echo "SSO expired"
-      aws sso login --profile $1
-    fi
-  else
-    aws sso login --profile $1
-  fi
-
-  JSON_BASEPATH="${HOME}/.aws/cli/cache"
-  AWS_CREDENTIALS_PATH="${HOME}/.aws/credentials"
-
-  if [ -f ${AWS_CREDENTIALS_PATH} ]; then
-      echo "backing up existing credentials"
-      if [[ -f ${HOME}/.aws/backup ]]; then
-        mkdir ${HOME}/.aws/backup
-      fi
-      cp -rf ${AWS_CREDENTIALS_PATH} ${HOME}/.aws/backup/$(date +"%s")
-      currdir=$PWD
-      dirs=($(find ${HOME}/.aws/backup -type d))
-      for dir in "${dirs[@]}"; do
-        cd "$dir"
-        ls -pt | grep -v / | tail -n +10 | xargs rm -f
-        cd $currdir
-      done
-  fi
-
-  # find the latest CLI JSON file
-  json_file=$(ls -tr "${JSON_BASEPATH}" | tail -n1)
-  if [[ ! -z "$json_file" && -f ${JSON_BASEPATH}/${json_file} ]]; then
-    echo "Found cli cache file"
-    EXPIRATION=$(cat ${JSON_BASEPATH}/${json_file} | jq -r '.Credentials.Expiration')
-    NOW=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
-    # echo $EXPIRATION
-    # echo $NOW
-    if [[ $NOW > $EXPIRATION ]]; then
-      echo "CLI cache expired"
-      rm ${JSON_BASEPATH}/${json_file}
-      unset AWS_ACCESS_KEY_ID && unset AWS_SECRET_ACCESS_KEY && unset AWS_SESSION_TOKEN
-      aws sts get-caller-identity --no-cli-pager --profile $1 &
-      PID=$!
-      wait $PID
-    fi
-  else
-    aws sts get-caller-identity --no-cli-pager --profile $1 &
-    PID=$!
-    wait $PID
-  fi
-  json_file=$(ls -tr "${JSON_BASEPATH}" | tail -n1)
-  # use jq to dump stuff in the right place
-  unset AWS_DEFAULT_PROFILE && unset AWS_PROFILE
-  unset AWS_ACCESS_KEY_ID && export AWS_ACCESS_KEY_ID=$(cat ${JSON_BASEPATH}/${json_file} | jq -r '.Credentials.AccessKeyId')
-  unset AWS_SECRET_ACCESS_KEY && export AWS_SECRET_ACCESS_KEY=$(cat ${JSON_BASEPATH}/${json_file} | jq -r '.Credentials.SecretAccessKey')
-  unset AWS_SESSION_TOKEN && export AWS_SESSION_TOKEN=$(cat ${JSON_BASEPATH}/${json_file} | jq -r '.Credentials.SessionToken')
-  unset AWS_REGION && export AWS_REGION=$(aws configure get region --profile $1)
-  unset AWS_DEFAULT_REGION && export AWS_DEFAULT_REGION=$(aws configure get region --profile $1)
-}
 
 # this goes with awsp function
 if [ -f $HOME/.aws/.env ]; then
@@ -236,3 +170,5 @@ esac
 # bun
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
+
+export PATH="$HOME/bin:$PATH"
