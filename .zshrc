@@ -35,10 +35,11 @@ source $ZSH/oh-my-zsh.sh
         https://github.com/marlonrichert/zsh-snap.git $HOME/.oh-my-zsh/custom/plugins/zsh-snap
 source $HOME/.oh-my-zsh/custom/plugins/zsh-snap/znap.zsh
 
+
+znap source zsh-users/zsh-syntax-highlighting
 znap source marlonrichert/zsh-autocomplete
 znap source zsh-users/zsh-autosuggestions
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#ff00ff,bold"
-znap source zsh-users/zsh-syntax-highlighting
 znap source romkatv/powerlevel10k
 znap source rupa/z
 
@@ -62,7 +63,7 @@ alias da="direnv allow"
 alias hg="history | grep"
 alias eg="env | grep"
 alias kube="kubectl"
-eval "$(direnv hook zsh)"
+#eval "$(direnv hook zsh)"
 
 # this goes with awsp function
 if [ -f $HOME/.aws/.env ]; then
@@ -129,10 +130,10 @@ function awsp() {
 	fi
 }
 
-if [ -f $HOME/.asdf/asdf.sh ]; then
-    . $HOME/.asdf/asdf.sh
-else
-    . $(brew --prefix asdf)/libexec/asdf.sh
+if [ -f "$HOME/.asdf/asdf.sh" ]; then
+    . "$HOME/.asdf/asdf.sh"
+elif command -v brew >/dev/null 2>&1; then
+    . "$(brew --prefix asdf)/libexec/asdf.sh"
 fi
 
 # tmux
@@ -172,3 +173,5 @@ export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
 
 export PATH="$HOME/bin:$PATH"
+
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
