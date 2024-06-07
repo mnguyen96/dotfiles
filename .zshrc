@@ -130,13 +130,6 @@ function awsp() {
 	fi
 }
 
-if [ -f "$HOME/.asdf/asdf.sh" ]; then
-    . "$HOME/.asdf/asdf.sh"
-elif command -v brew >/dev/null 2>&1; then
-    . "$(brew --prefix asdf)/libexec/asdf.sh"
-    echo -e "\n. $(brew --prefix asdf)/libexec/asdf.sh" >> ${ZDOTDIR:-~}/.zshrc
-fi
-
 # tmux
 if [ ! "$TMUX" = "" ]; then export TERM=xterm-256color; fi
 
@@ -175,6 +168,12 @@ export PATH="$BUN_INSTALL/bin:$PATH"
 
 export PATH="$HOME/bin:$PATH"
 
-eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-
-. /home/linuxbrew/.linuxbrew/opt/asdf/libexec/asdf.sh
+system_type=$(uname -s)
+if [ "$system_type" = "Darwin" ]; then
+  . /opt/homebrew/opt/asdf/libexec/asdf.sh
+elif [ "$system_type" = "Linux" ]; then
+  # Brew for linux
+  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+  # asdf
+  . /home/linuxbrew/.linuxbrew/opt/asdf/libexec/asdf.sh
+fi
