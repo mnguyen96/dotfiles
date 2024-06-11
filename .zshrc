@@ -5,51 +5,67 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-setopt EXTENDED_HISTORY
-setopt HIST_EXPIRE_DUPS_FIRST
-setopt HIST_IGNORE_DUPS
-setopt HIST_IGNORE_ALL_DUPS
-setopt HIST_IGNORE_SPACE
-setopt HIST_FIND_NO_DUPS
-setopt HIST_SAVE_NO_DUPS
-setopt HIST_BEEP
+
+# Set the directory we want to store zinit and plugins
+ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
+
+# Download Zinit, if it's not there yet
+if [ ! -d "$ZINIT_HOME" ]; then
+   mkdir -p "$(dirname $ZINIT_HOME)"
+   git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
+fi
+
+# Source/Load zinit
+source "${ZINIT_HOME}/zinit.zsh"
+
+# Add in Powerlevel10k
+zinit ice depth=1; zinit light romkatv/powerlevel10k
+
+# Add in zsh plugins
+zinit light zsh-users/zsh-syntax-highlighting
+zinit light zsh-users/zsh-completions
+zinit light zsh-users/zsh-autosuggestions
+ZSH_AUTOSUGGEST_STRATEGY=(history completion)
 
 
+# Add in snippets
+zinit snippet OMZP::git
+zinit snippet OMZP::sudo
+zinit snippet OMZP::aws
+zinit snippet OMZP::kubectl
+zinit snippet OMZP::command-not-found
 
-bindkey "\eh" backward-word
-bindkey "\el" forward-word
-
-# Path to your oh-my-zsh installation.
-export ZSH="$HOME/.oh-my-zsh"
-
-ZSH_THEME=""
-ZSH_DISABLE_COMPFIX=true
-DISABLE_AUTO_TITLE="true"
-
-plugins=(git)
-
-source $ZSH/oh-my-zsh.sh
-
-[[ -f $HOME/.oh-my-zsh/custom/plugins/zsh-snap/znap.zsh ]] ||
-    git clone --depth 1 -- \
-        https://github.com/marlonrichert/zsh-snap.git $HOME/.oh-my-zsh/custom/plugins/zsh-snap
-source $HOME/.oh-my-zsh/custom/plugins/zsh-snap/znap.zsh
+# Completion styling
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
+zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
+zstyle ':completion:*' menu no
+zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls --color $realpath'
+zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'ls --color $realpath'
 
 
-znap source zsh-users/zsh-syntax-highlighting
-znap source marlonrichert/zsh-autocomplete
-znap source zsh-users/zsh-autosuggestions
-ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#ff00ff,bold"
-znap source romkatv/powerlevel10k
-znap source rupa/z
+# Load completions
+autoload -Uz compinit && compinit
+zinit light Aloxaf/fzf-tab
 
-zstyle ':omz:update' mode reminder
+zinit cdreplay -q
 
+# History
+HISTSIZE=5000
+HISTFILE=~/.zsh_history
+SAVEHIST=$HISTSIZE
+HISTDUP=erase
+setopt appendhistory
+setopt sharehistory
+setopt hist_ignore_space
+setopt hist_ignore_all_dups
+setopt hist_save_no_dups
+setopt hist_ignore_dups
+setopt hist_find_no_dups
 
-bindkey "\eh" backward-char
-bindkey "\el" forward-char
-bindkey "\eH" backward-word
-bindkey "\eL" forward-word
+# Keybindings
+#bindkey -e
+bindkey '^p' history-search-backward
+bindkey '^n' history-search-forward
 
 alias status="git status"
 alias push="git push"
@@ -57,13 +73,18 @@ alias pull="git pull"
 alias pullr="git pull --rebase"
 alias ac="git add-commit"
 alias aca="git add -A && git commit --amend --no-edit"
+alias gsw="git switch"
+alias gd="git diff"
 alias grsoft="git reset --soft HEAD^"
 alias grhard="git reset --hard HEAD^"
+alias lsa="ls -lahA --color"
+alias ls="ls --color"
 alias da="direnv allow"
 alias hg="history | grep"
 alias eg="env | grep"
 alias kube="kubectl"
-#eval "$(direnv hook zsh)"
+alias vim='nvim'
+alias c='clear'
 
 # this goes with awsp function
 if [ -f $HOME/.aws/.env ]; then
@@ -130,9 +151,6 @@ function awsp() {
 	fi
 }
 
-# tmux
-if [ ! "$TMUX" = "" ]; then export TERM=xterm-256color; fi
-
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
 __conda_setup="$('$HOME/anaconda3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
@@ -177,3 +195,7 @@ elif [ "$system_type" = "Linux" ]; then
   # asdf
   . /home/linuxbrew/.linuxbrew/opt/asdf/libexec/asdf.sh
 fi
+
+# Shell integrations
+eval "$(fzf --zsh)"
+eval "$(zoxide init --cmd cd zsh)"
