@@ -61,9 +61,10 @@ setopt hist_ignore_dups
 setopt hist_find_no_dups
 
 # Keybindings
-#bindkey -e
+bindkey -e
 bindkey '^p' history-search-backward
 bindkey '^n' history-search-forward
+bindkey -r '\eh'
 
 alias status="git status"
 alias push="git push"
@@ -83,7 +84,7 @@ alias eg="env | grep"
 alias kube="kubectl"
 alias vim='nvim'
 alias c='clear'
-
+alias help='run-help'
 # this goes with awsp function
 if [ -f $HOME/.aws/.env ]; then
   export $(cat ~/.aws/.env | xargs)
