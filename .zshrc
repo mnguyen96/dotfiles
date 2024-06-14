@@ -72,8 +72,6 @@ alias pull="git pull"
 alias pullr="git pull --rebase"
 alias ac="git add-commit"
 alias aca="git add -A && git commit --amend --no-edit"
-alias gsw="git switch"
-alias gd="git diff"
 alias grsoft="git reset --soft HEAD^"
 alias grhard="git reset --hard HEAD^"
 alias lsa="ls -lahA --color"
@@ -84,7 +82,6 @@ alias eg="env | grep"
 alias kube="kubectl"
 alias vim='nvim'
 alias c='clear'
-alias help='run-help'
 # this goes with awsp function
 if [ -f $HOME/.aws/.env ]; then
   export $(cat ~/.aws/.env | xargs)
