@@ -46,7 +46,14 @@ config.keys = {
 	-- Cycle to the previous pane
 	{ key = "h", mods = "ALT", action = wezterm.action({ ActivatePaneDirection = "Prev" }) },
 }
-
+for i = 1, 8 do
+	-- CTRL+ALT + number to activate that tab
+	table.insert(config.keys, {
+		key = tostring(i),
+		mods = "ALT",
+		action = act.ActivateTab(i - 1),
+	})
+end
 config.initial_cols = 120
 config.initial_rows = 40
 return config
