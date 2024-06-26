@@ -5,8 +5,13 @@ local act = wezterm.action
 config.color_scheme = "Catppuccin Macchiato"
 config.keys = {
 	{
+		key = "t",
+		mods = "ALT",
+		action = act.SpawnTab("CurrentPaneDomain"),
+	},
+	{
 		key = "w",
-		mods = "CTRL",
+		mods = "ALT",
 		action = wezterm.action.CloseCurrentPane({ confirm = true }),
 	},
 	-- command + s save in mac
@@ -52,6 +57,15 @@ for i = 1, 8 do
 		key = tostring(i),
 		mods = "ALT",
 		action = act.ActivateTab(i - 1),
+	})
+end
+
+for i = 1, 8 do
+	-- CTRL+ALT + number to move to that position
+	table.insert(config.keys, {
+		key = tostring(i),
+		mods = "CTRL|ALT",
+		action = wezterm.action.MoveTab(i - 1),
 	})
 end
 config.initial_cols = 120
