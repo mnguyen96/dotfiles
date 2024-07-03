@@ -3,6 +3,7 @@ local wezterm = require("wezterm")
 local config = wezterm.config_builder()
 local act = wezterm.action
 config.color_scheme = "Catppuccin Macchiato"
+config.leader = { key = "a", mods = "CTRL", timeout_milliseconds = 1000 }
 config.keys = {
 	{
 		key = "t",
@@ -13,6 +14,11 @@ config.keys = {
 		key = "w",
 		mods = "ALT",
 		action = wezterm.action.CloseCurrentPane({ confirm = true }),
+	},
+	{
+		mods = "LEADER",
+		key = "m",
+		action = wezterm.action.TogglePaneZoomState,
 	},
 	-- command + s save in mac
 	{ mods = "CMD", key = "s", action = act.SendKey({ mods = "CTRL", key = "s" }) },
