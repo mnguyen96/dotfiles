@@ -5,6 +5,7 @@ return {
       colorscheme = "catppuccin-macchiato",
     },
   },
+  { "savq/melange-nvim" },
   { "EdenEast/nightfox.nvim" },
   {
     "navarasu/onedark.nvim",
