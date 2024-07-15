@@ -6,6 +6,8 @@ return {
     },
   },
   { "savq/melange-nvim" },
+  { "morhetz/gruvbox" },
+
   { "EdenEast/nightfox.nvim" },
   {
     "navarasu/onedark.nvim",
