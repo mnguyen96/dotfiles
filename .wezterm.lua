@@ -3,6 +3,7 @@ local wezterm = require("wezterm")
 local config = wezterm.config_builder()
 local act = wezterm.action
 config.color_scheme = "Catppuccin Mocha"
+config.font = wezterm.font("JetBrains Mono")
 -- config.color_scheme = "Gruvbox Dark (Gogh)"
 config.leader = { key = "q", mods = "CTRL", timeout_milliseconds = 1000 }
 config.keys = {
