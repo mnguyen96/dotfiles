@@ -2,7 +2,7 @@ return {
   {
     "LazyVim/LazyVim",
     opts = {
-      colorscheme = "catppuccin",
+      colorscheme = "kanagawa",
     },
   },
   {
@@ -10,7 +10,7 @@ return {
   },
   {
     "AlexvZyl/nordic.nvim",
-    config = {
+    opts = {
       -- This callback can be used to override the colors used in the palette.
       on_palette = function(palette)
         return palette
@@ -20,7 +20,7 @@ return {
       -- Enable italic comments.
       italic_comments = true,
       -- Enable general editor background transparency.
-      transparent_bg = false,
+      transparency = true,
       -- Enable brighter float border.
       bright_border = false,
       -- Reduce the overall amount of blue in the theme (diverges from base Nord).
@@ -28,7 +28,6 @@ return {
       -- Swap the dark background with the normal one.
       swap_backgrounds = false,
       -- Override the styling of any highlight group.
-      override = {},
       -- Cursorline options.  Also includes visual/selection.
       cursorline = {
         -- Bold font in cursorline.
