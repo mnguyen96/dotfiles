@@ -7,8 +7,8 @@ return {
   keys = {
     { "n", "j", "<cmd>Hardtime<CR>", desc = "Hardtime" },
     { "n", "k", "<cmd>Hardtime<CR>", desc = "Hardtime" },
-    { "j", 'v:count || mode(1)[0:1] == "no" ? "j" : "gj"' },
-    { "k", 'v:count || mode(1)[0:1] == "no" ? "k" : "gk"' },
+    -- { "j", 'v:count || mode(1)[0:1] == "no" ? "j" : "gj"' },
+    -- { "k", 'v:count || mode(1)[0:1] == "no" ? "k" : "gk"' },
     { "n", "gj", "<cmd>Hardtime<CR>", desc = "Hardtime" },
     { "n", "gk", "<cmd>Hardtime<CR>", desc = "Hardtime" },
     { "n", "n", false },
