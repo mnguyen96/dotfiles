@@ -6,3 +6,4 @@
 vim.api.nvim_set_keymap("n", "<leader>td", "<cmd>Telescope diagnostics<CR>", { noremap = true, silent = true })
 vim.keymap.set("i", "jj", "<ESC>", { silent = true })
 vim.keymap.set("i", "jk", "<ESC>", { silent = true })
+vim.keymap.set("i", "kk", "<ESC>", { silent = true })

@@ -184,7 +184,7 @@ export PATH="$HOME/bin:$PATH"
 
 system_type=$(uname -s)
 if [ "$system_type" = "Darwin" ]; then
-  . /opt/homebrew/opt/asdf/libexec/asdf.sh
+  . $(brew --prefix asdf)/libexec/asdf.sh
 elif [ "$system_type" = "Linux" ]; then
   # Brew for linux
   eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
