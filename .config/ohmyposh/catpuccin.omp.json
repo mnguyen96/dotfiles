@@ -34,7 +34,7 @@
           "properties": {
             "folder_icon": "..\ue5fe..",
             "home_icon": "~",
-            "style": "agnoster_short"
+            "style": "full"
           },
           "template": " {{ .Path }}",
           "foreground": "p:text",
@@ -64,6 +64,61 @@
           "style": "powerline"
         }
       ]
+    },
+    {
+      "alignment": "right",
+      "segments": [
+        {
+          "type": "kubectl",
+          "style": "powerline",
+          "powerline_symbol": "",
+          "foreground": "#000000",
+          "background": "#ebcc34",
+          "template": " ﴱ {{.Context}}{{if .Namespace}} :: {{.Namespace}}{{end}} ",
+          "properties": {
+            "context_aliases": {
+              "arn:aws:eks:eu-west-1:1234567890:cluster/posh": "posh"
+            }
+          }
+        },
+        {
+          "type": "terraform",
+          "style": "powerline",
+          "powerline_symbol": "",
+          "foreground": "#81ff91",
+          "template": "<#cc7eda> \u007C </><#7eb8da>\ue71e </> {{.WorkspaceName}}"
+        },
+
+        {
+          "foreground": "#81ff91",
+          "properties": {
+            "fetch_version": true
+          },
+          "style": "powerline",
+          "template": "<#cc7eda> \u007C </><#7eb8da>\ue718</> {{ if .PackageManagerIcon }}{{ .PackageManagerIcon }} {{ end }}{{ .Full }}",
+          "type": "node"
+        },
+        {
+          "type": "sysinfo",
+          "style": "powerline",
+          "foreground": "#81ff91",
+          "template": "<> </>"
+        },
+        {
+          "background": "#cecece",
+          "foreground": "#4b4b4b",
+          "leading_diamond": "\ue0b2",
+          "trailing_diamond": "\ue0b0",
+          "properties": {
+            "style": "austin",
+            "threshold": 150
+          },
+          "style": "diamond",
+          "template": "⌛  {{ .FormattedMs }} ",
+          "type": "executiontime"
+        }
+      ],
+      "type": "prompt"
     }
   ],
   "version": 3,

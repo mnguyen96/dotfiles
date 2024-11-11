@@ -3,9 +3,10 @@ return {
     "LazyVim/LazyVim",
     opts = {
       -- colorscheme = "kanagawa",
-      colorscheme = "tokyonight-storm",
+      colorscheme = "catppuccin",
     },
   },
+  { "catppuccin/nvim", name = "catppuccin" },
   {
     "sainnhe/gruvbox-material",
   },
