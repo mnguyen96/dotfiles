@@ -74,10 +74,13 @@
           "powerline_symbol": "",
           "foreground": "#000000",
           "background": "#ebcc34",
-          "template": " ﴱ {{.Context}}{{if .Namespace}} :: {{.Namespace}}{{end}} ",
+          "template": " {{.Context}}{{if .Namespace}} :: {{.Namespace}}{{end}} ",
           "properties": {
             "context_aliases": {
-              "arn:aws:eks:eu-west-1:1234567890:cluster/posh": "posh"
+              "arn:aws-us-gov:eks:us-gov-west-1:415473649360:cluster/dev-precert": "dev-precert",
+              "arn:aws-us-gov:eks:us-gov-west-1:415473649360:cluster/qa-precert": "qa-precert",
+              "arn:aws-us-gov:eks:us-gov-west-1:415473649360:cluster/stage-precert": "stage-precert",
+              "arn:aws-us-gov:eks:us-gov-west-1:415473649360:cluster/prod-precert": "prod-precert"
             }
           }
         },
@@ -119,8 +122,32 @@
         }
       ],
       "type": "prompt"
+    },
+    {
+      "alignment": "left",
+      "newline": true,
+      "segments": [
+        {
+          "foreground": "#cd5e42",
+          "style": "plain",
+          "template": "\ue3bf ",
+          "type": "root"
+        },
+        {
+          "foreground": "#CD4277",
+          "style": "plain",
+          "template": "<#F5BDE6>\u276f</>",
+          "type": "text"
+        }
+      ],
+      "type": "prompt"
     }
   ],
+  "transient_prompt": {
+    "background": "transparent",
+    "foreground": "#FEF5ED",
+    "template": "<#F5BDE6>\u276f </>"
+  },
   "version": 3,
   "final_space": true
 }
