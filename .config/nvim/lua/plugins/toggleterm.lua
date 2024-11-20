@@ -12,7 +12,7 @@ return {
       insert_mappings = true,
       terminal_mappings = true,
       persist_size = true,
-      direction = "horizontal",
+      direction = "float",
       close_on_exit = true,
       shell = vim.o.shell,
       float_opts = {
