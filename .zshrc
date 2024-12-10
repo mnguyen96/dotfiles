@@ -15,7 +15,8 @@ zinit light zsh-users/zsh-syntax-highlighting
 zinit light zsh-users/zsh-completions
 zinit light zsh-users/zsh-autosuggestions
 ZSH_AUTOSUGGEST_STRATEGY=(history completion)
-
+zinit ice depth=1
+zinit light jeffreytse/zsh-vi-mode
 
 # Add in snippets
 zinit snippet OMZP::git
