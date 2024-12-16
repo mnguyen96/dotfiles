@@ -5,6 +5,7 @@ local act = wezterm.action
 config.color_scheme = "Dracula (Official)"
 config.font = wezterm.font("JetBrains Mono")
 -- config.color_scheme = "Gruvbox Dark (Gogh)"
+config.max_fps = 120
 config.leader = { key = "q", mods = "CTRL", timeout_milliseconds = 1000 }
 config.keys = {
 	{
