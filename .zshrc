@@ -17,7 +17,9 @@ zinit light zsh-users/zsh-autosuggestions
 ZSH_AUTOSUGGEST_STRATEGY=(history completion)
 zinit ice depth=1
 zinit light jeffreytse/zsh-vi-mode
-
+function zvm_after_init() {
+  zvm_bindkey viins "^R" fzf-history-widget
+}
 # Add in snippets
 zinit snippet OMZP::git
 zinit snippet OMZP::kubectl
@@ -152,7 +154,7 @@ esac
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
 
-export PATH="$HOME/bin:$PATH"
+export PATH="$HOME/.bin:$PATH"
 
 system_type=$(uname -s)
 if [ "$system_type" = "Darwin" ]; then
