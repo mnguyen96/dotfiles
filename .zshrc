@@ -80,7 +80,7 @@ if [ -f $HOME/.aws/.env ]; then
 fi
 
 function awsp() {
-	if [[ -d $HOME/.aws ]] && [[ -f $HOME/.aws/config ]]; then
+  	if [[ -d $HOME/.aws ]] && [[ -f $HOME/.aws/config ]]; then
 		case $# in
 		1)
       PFF=$(grep "profile" $HOME/.aws/config | sed 's/\[profile \(.*\)\]/\1/' | grep $1)
@@ -102,6 +102,7 @@ function awsp() {
 				echo "No MFA device. Make sure your local CLI profile and/or MFA device in AWS Console are configured."
 				return
 			fi
+
 			MFA_DEVICE=$(aws iam list-mfa-devices | jq -r '.MFADevices|first.SerialNumber')
 			echo "Found device: $MFA_DEVICE"
 			echo ''
@@ -173,3 +174,6 @@ fi
 # Shell integrations
 eval "$(fzf --zsh)"
 eval "$(zoxide init --cmd cd zsh)"
+export PYENV_ROOT="$HOME/.pyenv"
+[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init - zsh)"
