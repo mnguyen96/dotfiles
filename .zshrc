@@ -72,7 +72,6 @@ alias da="direnv allow"
 alias hg="history | grep"
 alias eg="env | grep"
 alias kube="kubectl"
-alias vim='nvim'
 alias c='clear'
 # this goes with awsp function
 if [ -f $HOME/.aws/.env ]; then
@@ -168,7 +167,8 @@ elif [ "$system_type" = "Linux" ]; then
 fi
 
 if [ "$TERM_PROGRAM" != "Apple_Terminal" ]; then
-  eval "$(oh-my-posh init zsh --config=~/.config/ohmyposh/catpuccin.omp.json)"
+  # eval "$(oh-my-posh init zsh --config=~/.config/ohmyposh/catpuccin.omp.json)"
+  eval "$(oh-my-posh init zsh --config=~/.config/ohmyposh/dracula.omp.json)"
 fi
 
 # Shell integrations
