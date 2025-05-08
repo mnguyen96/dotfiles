@@ -1,0 +1,41 @@
+{
+  "actions" : [
+    {
+      "key" : " ",
+      "label" : "",
+      "type" : "application",
+      "value" : "/Applications/Raycast.app"
+    },
+    {
+      "key" : "t",
+      "label" : "",
+      "type" : "application",
+      "value" : "/Applications/Ghostty.app"
+    },
+    {
+      "key" : "r",
+      "label" : "",
+      "type" : "application",
+      "value" : "/System/Applications/Reminders.app"
+    },
+    {
+      "key" : "b",
+      "label" : "",
+      "type" : "application",
+      "value" : "/Applications/Zen Browser.app"
+    },
+    {
+      "key" : "m",
+      "label" : "",
+      "type" : "application",
+      "value" : "/Applications/Spotify.app"
+    },
+    {
+      "key" : "e",
+      "label" : "",
+      "type" : "folder",
+      "value" : "/Users/michaelnguyen"
+    }
+  ],
+  "type" : "group"
+}
