@@ -74,7 +74,7 @@
           "powerline_symbol": "",
           "foreground": "#000000",
           "background": "#ebcc34",
-          "template": " {{.Context}}{{if .Namespace}} :: {{.Namespace}}{{end}} ",
+          "template": " {{.Cluster}}{{if .Namespace}} :: {{.Namespace}}{{end}} ",
           "properties": {
             "context_aliases": {
               "arn:aws-us-gov:eks:us-gov-west-1:415473649360:cluster/dev-precert": "dev-precert",
